@@ -9,14 +9,14 @@ app.use(express.json()); // my app may send and receive json data !!!
 console.log("API IS UP AND RUNNING!!!")
 
 // Endpoints 
-const deviceRouter = require('./routes/devices');
+const deviceRouter = require('./routes/device');
 const countriesRouter = require('./routes/countries');
 const goatsRouter = require('./routes/goats');
 const rankingRouter = require('./routes/ranking');
 const songsRouter = require('./routes/songs');
 const votesRouter = require('./routes/votes');
 
-app.use('/devices', deviceRouter);
+app.use('/device', deviceRouter);
 app.use('/countries', countriesRouter);
 app.use('/goats', goatsRouter);
 app.use('/ranking', rankingRouter);

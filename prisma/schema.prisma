@@ -8,7 +8,7 @@ datasource db {
   url      = "mysql://root:root@localhost:3306/iot_data_webproject"
 }
 
-model devices {
+model device {
   deviceid       Int       @id @default(autoincrement())
   device_name    String    @db.VarChar(100)
   device_purpose String?   @db.VarChar(300)
@@ -33,7 +33,7 @@ model sensors {
   sensor_name          String                 @db.VarChar(100)
   sensor_description   String?                @db.VarChar(300)
   led_activity         led_activity[]
-  devices              devices?               @relation(fields: [deviceid], references: [deviceid], onDelete: NoAction, onUpdate: NoAction, map: "FK_sensi3")
+  device              device?               @relation(fields: [deviceid], references: [deviceid], onDelete: NoAction, onUpdate: NoAction, map: "FK_sensi3")
   temperature_humidity temperature_humidity[]
 
   @@index([deviceid], map: "FK_sensi3_idx")

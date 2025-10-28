@@ -9,11 +9,11 @@ const prisma = new PrismaClient();
 
 // -------------------------
 // [GET] Devices 
-// return array of devices
+// return array of device
 // -------------------------
 router.get('/', async (req, res) => { // async = db enabled
-  const devices = await prisma.devices.findMany();
-  res.json(devices);
+  const device = await prisma.device.findMany();
+  res.json(device);
 })
 
 // -------------------------
@@ -23,7 +23,7 @@ router.get('/', async (req, res) => { // async = db enabled
 router.post('/', async (req, res) => {
   const deviceName = req.body.name;
 
-  const checkDeviceExists = await prisma.devices.findMany({
+  const checkDeviceExists = await prisma.device.findMany({
     where: {
       name: deviceName
     }
@@ -35,7 +35,7 @@ router.post('/', async (req, res) => {
     })
   } else {
 
-  const newDevice = await prisma.devices.create({
+  const newDevice = await prisma.device.create({
   
     data: { 
       name: deviceName

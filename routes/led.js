@@ -7,76 +7,62 @@ const router = express.Router();
 const { PrismaClient } = require('../generated/prisma'); // prisma can run raw sql
 const prisma = new PrismaClient();
 // -------------------------
-// [GET] Songs 
-// return array of songs
+// [GET] led activity 
+// return array of led activity
 // -------------------------
 router.get('/', async (req, res) => {
-  const songs = await prisma.songs.findMany({
+  const led = await prisma.led_activity.findMany({
     include: {
-      artists: true // INNER JOIN
+      sensors: true // INNER JOIN
     }
   });
-  res.json(songs);
+  res.json(led);
 })
 
 // -------------------------
-// [POST] Songs 
+// [POST] led activity 
 // return id (id kan ook null zijn, niet gelukt )
 // -------------------------
 router.post('/', async (req, res) => { 
-    const artistId = req.body.artist_id;
-    const songName = req.body.name;
+    const sensorid = req.body.sensorid;
+    const activated = req.body.activated;
 
-    // bestaat deze combo al?
-    const combinationCheck = await prisma.songs.findMany({
-      where: {
-        artist_id: artistId,
-        name: songName
-      }
-    })
-
-    if (combinationCheck.length > 0) {
-      res.json({
-        "status" : "Combination already exists!"
-      })
-    }
-
-    const newSong = await prisma.songs.create({
+    const newLed = await prisma.led_activity.create({
       data: {
-        artist_id: artistId,
-        name: songName
+        sensorid: sensorid,
+        activated: activated
       }
     })
-    res.send(newSong);
+    res.send(newLed);
 
-    console.log(artistId);
-    console.log(songName);
+    console.log(sensorid);
+    console.log(activated);
 })
 
 // -------------------------
-// [DELETE] Songs 
+// [DELETE] led activity 
 // return boolean (true or false )
 // -------------------------
 router.delete('/:id', async (req, res) => {
-  const songId = req.body.song_id;
+  const ledid = req.body.led_activityid;
 
-  const deletedSong = await prisma.songs.delete({
+  const deletedLed = await prisma.led_activity.delete({
     where: {
-      songs_id: songId,
+      led_activityid: ledid,
       
     }
   })
-  res.send("Deleted Songs");
+  res.send("Deleted led activity");
 })
 
 // -------------------------
-// [PUT] Songs 
+// [PUT] led activity 
 // return boolean (true or false )
 // -------------------------
 router.put('/:id', (req, res) => {
   // @todo: link to database
   // req.body -> om data uit een put te halen
-  res.send("Updated Songs");
+  res.send("Updated led activity");
 })
 
 module.exports = router;

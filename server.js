@@ -13,14 +13,14 @@ const deviceRouter = require('./routes/device');
 const countriesRouter = require('./routes/countries');
 const goatsRouter = require('./routes/goats');
 const rankingRouter = require('./routes/ranking');
-const songsRouter = require('./routes/songs');
+const ledRouter = require('./routes/led');
 const votesRouter = require('./routes/votes');
 
 app.use('/device', deviceRouter);
 app.use('/countries', countriesRouter);
 app.use('/goats', goatsRouter);
 app.use('/ranking', rankingRouter);
-app.use('/songs', songsRouter);
+app.use('/leds', ledRouter);
 app.use('/votes', votesRouter);
 
 app.listen(3000)

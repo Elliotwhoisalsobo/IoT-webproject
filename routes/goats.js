@@ -1,24 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const goats = [
-  {
-    id: 1,
-    name: "T-rex"
-  },
-  {
-    id: 2,
-    name: "Connie"
-  },
-  {
-    id: 3,
-    name: "Clyde"
-  },
-  {
-    id: 4,
-    name: "Insest goat"
-  },
-]
+
 
 router.get('/', (req, res) => {
   res.json(goats);

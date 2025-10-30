@@ -9,47 +9,48 @@ const { PrismaClient } = require('../generated/prisma');
 const prisma = new PrismaClient();
 
 // -------------------------
-// [GET] Votes 
+// [GET] Sensors 
 // return id (id kan ook null zijn, niet gelukt )
 // -------------------------
 router.get('/', async (req, res) => {
-    const votes = await prisma.votes.findMany();
-    res.json(votes);
+    const sensors = await prisma.sensors.findMany();
+    res.json(sensors);
 
-    //return votes
+    //return sensors
 })
 
 // -------------------------
-// [POST] Votes 
+// [POST] Sensors 
 // return id (id kan ook null zijn, niet gelukt )
 // -------------------------
 router.post('/', async (req, res) => {
     // @todo: link to database
     // req.body -> om data uit een post te halen
     //const voterid = req.body.voter_id;
-    const song_id = req.body.song_id;
-    const points = req.body.points;
+    const deviceid = req.body.deviceid;
+    const sensor_name = req.body.sensor_name;
     // integers = parse later
     //res.send("Added vote");
 
-    const newVote = await prisma.votes.create({
+    const newSensor = await prisma.sensors.create({
         data: {
            // voter_id: voterid,
-            song_id: song_id,
-            points
+            deviceid: deviceid,
+            sensor_name: sensor_name,
+            sensor_description: sensor_description
         }
     })
-    res.json(newVote)
-    res.send(newVote)
+    res.json(newSensor)
+    res.send(newSensor)
     //console.log(voter_id);
-    console.log(song_id);
-    console.log(points);
+    console.log(sensor_name);
+    console.log(sensor_description);
 
 })
 
 
 
-// model votes {
+// model sensors {
 //   vote_id  Int     @id @default(autoincrement())
 //   voter_id Int?
 //   song_id  Int?
@@ -57,7 +58,7 @@ router.post('/', async (req, res) => {
 //   voters   voters? @relation(fields: [voter_id], references: [voter_id], onDelete: NoAction, onUpdate: NoAction, map: "votes_ibfk_1")
 //   songs    songs?  @relation(fields: [song_id], references: [song_id], onDelete: NoAction, onUpdate: NoAction, map: "votes_ibfk_2")
 
-// prisma.votes.create
+// prisma.sensors.create
 // return new vote
 
 // req.body -> om data uit post te halen

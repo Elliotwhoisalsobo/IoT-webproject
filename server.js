@@ -10,17 +10,15 @@ console.log("API IS UP AND RUNNING!!!")
 
 // Endpoints 
 const deviceRouter = require('./routes/device');
-const countriesRouter = require('./routes/countries');
-const goatsRouter = require('./routes/goats');
-const rankingRouter = require('./routes/ranking');
+const temp_humidityRouter = require('./routes/temperature_humidity');
+const loginRouter = require('./routes/login');
 const ledRouter = require('./routes/led');
-const votesRouter = require('./routes/votes');
+const sensorsRouter = require('./routes/sensor');
 
 app.use('/device', deviceRouter);
-app.use('/countries', countriesRouter);
-app.use('/goats', goatsRouter);
-app.use('/ranking', rankingRouter);
+app.use('/temp_humidity', temp_humidityRouter);
+app.use('/login', loginRouter);
 app.use('/leds', ledRouter);
-app.use('/votes', votesRouter);
+app.use('/sensor', sensorsRouter);
 
 app.listen(3000)

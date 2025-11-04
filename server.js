@@ -10,15 +10,15 @@ console.log("API IS UP AND RUNNING!!!")
 
 // Endpoints 
 const deviceRouter = require('./routes/device');
-const temp_humidityRouter = require('./routes/temperature_humidity');
+const temp_humidityRouter = require('./routes/temp_humidity');
 const loginRouter = require('./routes/login');
 const ledRouter = require('./routes/led');
-const sensorsRouter = require('./routes/sensor');
+const sensorRouter = require('./routes/sensor'); // error module not found
 
 app.use('/device', deviceRouter);
 app.use('/temp_humidity', temp_humidityRouter);
 app.use('/login', loginRouter);
-app.use('/leds', ledRouter);
-app.use('/sensor', sensorsRouter);
+app.use('/led', ledRouter);
+app.use('/sensor', sensorRouter);
 
 app.listen(3000)

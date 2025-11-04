@@ -14,15 +14,17 @@ model device {
   device_purpose String?   @db.VarChar(300)
   device_ip      String?   @db.VarChar(45)
   status         String?   @db.VarChar(45)
+  isdeleted      DateTime? @db.Timestamp(0)
   sensors        sensors[]
 }
 
 model led_activity {
   led_activitiyid Int       @id @default(autoincrement())
-  sensorid        Int?
+  sensorid        Int
   activated       Int?      @db.TinyInt
   datetime        DateTime? @db.DateTime(0)
-  sensors         sensors?  @relation(fields: [sensorid], references: [sensorid], onDelete: NoAction, onUpdate: NoAction, map: "fk_sensi_1")
+  isdeleted       DateTime? @db.Timestamp(0)
+  sensors         sensors   @relation(fields: [sensorid], references: [sensorid], onDelete: NoAction, onUpdate: NoAction, map: "fk_sensi_1")
 
   @@index([sensorid], map: "fk_sensi_1_idx")
 }
@@ -32,8 +34,9 @@ model sensors {
   deviceid             Int?
   sensor_name          String                 @db.VarChar(100)
   sensor_description   String?                @db.VarChar(300)
+  isdeleted            DateTime?              @db.Timestamp(0)
   led_activity         led_activity[]
-  device              device?               @relation(fields: [deviceid], references: [deviceid], onDelete: NoAction, onUpdate: NoAction, map: "FK_sensi3")
+  device               device?                @relation(fields: [deviceid], references: [deviceid], onDelete: NoAction, onUpdate: NoAction, map: "FK_sensi3")
   temperature_humidity temperature_humidity[]
 
   @@index([deviceid], map: "FK_sensi3_idx")
@@ -42,9 +45,10 @@ model sensors {
 model temperature_humidity {
   temperature_humidityid Int       @id @default(autoincrement())
   sensorid               Int?
-  temperature__C__       Float?    @map("temperature (C°)") @db.Float
+  temperature            Float?    @db.Float
   humidity               Float?    @db.Float
   datetime               DateTime? @db.DateTime(0)
+  isdeleted              DateTime? @db.Timestamp(0)
   sensors                sensors?  @relation(fields: [sensorid], references: [sensorid], onDelete: NoAction, onUpdate: NoAction, map: "FK_Sensi2")
 
   @@index([sensorid], map: "FK_Sensi2_idx")

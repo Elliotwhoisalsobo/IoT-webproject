@@ -13,10 +13,12 @@ const prisma = new PrismaClient();
 // return id (id kan ook null zijn, niet gelukt )
 // -------------------------
 router.get('/', async (req, res) => {
-    const sensors = await prisma.sensors.findMany();
+    const sensors = await prisma.sensors.findMany({
+        include: {
+            device: true
+        }
+    });
     res.json(sensors);
-
-    //return sensors
 })
 
 // -------------------------
@@ -29,6 +31,7 @@ router.post('/', async (req, res) => {
     //const voterid = req.body.voter_id;
     const deviceid = req.body.deviceid;
     const sensor_name = req.body.sensor_name;
+    const sensor_description = req.body.sensor_description;
     // integers = parse later
     //res.send("Added vote");
 
@@ -48,20 +51,36 @@ router.post('/', async (req, res) => {
 
 })
 
+// -----------------------
+// [DELETE] Sensors
+// just input id
+// ----------------------
+
+// WORKS --> http://localhost:3000/sensor/2
+router.delete('/:id', async (req, res) => {
+    const sensorid = req.params.id;
+
+    const deletedSensor = await prisma.sensors.delete({
+    where: {
+        sensorid: parseInt(sensorid)
+      }
+    })
+    res.send(deletedSensor);
+})
 
 
-// model sensors {
-//   vote_id  Int     @id @default(autoincrement())
-//   voter_id Int?
-//   song_id  Int?
-//   points   Int?
-//   voters   voters? @relation(fields: [voter_id], references: [voter_id], onDelete: NoAction, onUpdate: NoAction, map: "votes_ibfk_1")
-//   songs    songs?  @relation(fields: [song_id], references: [song_id], onDelete: NoAction, onUpdate: NoAction, map: "votes_ibfk_2")
+// router.delete('/:id', async (req, res) => {
+//   const songId = req.params.id;
 
-// prisma.sensors.create
-// return new vote
+//   const deletedSong = await prisma.songs.delete({
+//     where: {
+//       song_id: parseInt(songId)
+//     }
+//   });
 
-// req.body -> om data uit post te halen
-//res.send()
+//   res.send(deletedSong);
+// })
+
+
 
 module.exports = router;

@@ -53,3 +53,9 @@ model temperature_humidity {
 
   @@index([sensorid], map: "FK_Sensi2_idx")
 }
+
+model users {
+  userid   Int    @id
+  username String @db.VarChar(200)
+  password String @db.VarChar(200)
+}

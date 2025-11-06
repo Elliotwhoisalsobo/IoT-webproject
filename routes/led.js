@@ -39,6 +39,17 @@ router.post('/', async (req, res) => {
     console.log(activated);
 })
 
+
+// -------------------------
+// [PUT] led activity 
+// return boolean (true or false )
+// -------------------------
+router.put('/:id', (req, res) => {
+  // @todo: link to database
+  // req.body -> om data uit een put te halen
+  res.send("Updated led activity");
+})
+
 // -------------------------
 // [DELETE] led activity 
 // return boolean (true or false )
@@ -53,16 +64,7 @@ router.delete('/:id', async (req, res) => {
     }
   })
   res.send("Deleted led activity");
-})
-
-// -------------------------
-// [PUT] led activity 
-// return boolean (true or false )
-// -------------------------
-router.put('/:id', (req, res) => {
-  // @todo: link to database
-  // req.body -> om data uit een put te halen
-  res.send("Updated led activity");
+  res.send(deletedLed);
 })
 
 module.exports = router;

@@ -45,14 +45,6 @@ router.post('/', async (req, res) => {
     res.json(newDevice);
 })
 
-// -------------------------
-// [DELETE] Devices 
-// return boolean (true or false )
-// -------------------------
-router.delete('/:id', (req, res) => {
-  // @todo: link to database
-  res.send("Deleted device");
-})
 
 // -------------------------
 // [PUT] Devices 
@@ -62,6 +54,15 @@ router.put('/:id', (req, res) => {
   // @todo: link to database
   // req.body -> om data uit een put te halen
   res.send("Updated device");
+})
+
+// -------------------------
+// [DELETE] Devices 
+// return boolean (true or false )
+// -------------------------
+router.delete('/:id', (req, res) => {
+  // @todo: link to database
+  res.send("Deleted device");
 })
 
 module.exports = router;

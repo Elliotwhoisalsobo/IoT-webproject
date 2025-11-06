@@ -7,44 +7,44 @@ const router = express.Router();
 const { PrismaClient } = require('../generated/prisma'); // prisma can run raw sql
 const prisma = new PrismaClient();
 // -------------------------
-// [GET] led activity 
-// return array of led activity
+// [GET] temp_hum activity 
+// return array of temp_hum activity
 // -------------------------
 router.get('/', async (req, res) => {
-  const led = await prisma.temp_humidity.findMany({
+  const temp_hum = await prisma.temperature_humidity.findMany({
     include: {
       sensors: true // INNER JOIN
       // perhaps add more here, or is this only for joins?
     }
   });
-  res.json(led);
+  res.json(temp_hum);
 })
 
 // -------------------------
-// [POST] led activity 
+// [POST] temp_hum activity 
 // return id (id kan ook null zijn, niet gelukt )
 // -------------------------
 router.post('/', async (req, res) => { 
     const sensorid = req.body.sensorid;
-    const temperature__C__ = req.body.temperature__C__;
+    const temperature = req.body.temperature;
 
-    const newLed = await prisma.temp_humidity.create({
+    const temp = await prisma.temp_humidity.create({
       data: {
         sensorid: sensorid,
-        temperature: temperature__C__,
+        temperature: temperature,
         humidity: humidity
       }
     })
-    res.send(newLed);
+    res.send(temp);
 
     console.log(sensorid);
-    console.log(temperature__C__);
+    console.log(temperature);
     console.log(humidity);
 })
 
 
 // -------------------------
-// [PUT] led activity 
+// [PUT] temp_hum activity 
 // return boolean (true or false )
 // -------------------------
 router.put('/:id', (req, res) => {
@@ -54,19 +54,19 @@ router.put('/:id', (req, res) => {
 })
 
 // -------------------------
-// [DELETE] led activity 
+// [DELETE] temp_hum activity 
 // return boolean (true or false )
 // -------------------------
 router.delete('/:id', async (req, res) => {
-  const ledid = req.body.temp_humidity;
+  const temperature_humidityid = req.body.temp_humidity;
 
   const deleted_temperature = await prisma.temp_humidity.delete({
     where: {
-      temp_humidity: temp_humidity
+      temperature_humidityid: parseInt(temperature_humidityid)
       
     }
   })
-  res.send("Deleted DHT data");
+  res.send(deleted_temperature);
 })
 
 module.exports = router;

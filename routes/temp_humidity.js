@@ -47,11 +47,15 @@ router.post('/', async (req, res) => {
 // [PUT] temp_hum activity 
 // return boolean (true or false )
 // -------------------------
-router.put('/:id', (req, res) => {
-  // @todo: link to database
-  // req.body -> om data uit een put te halen
-  res.send("Updated DHT data");
-})
+router.put('/:id', async (req, res) => {
+
+    const updatedTemperature = await prisma.temperature_humidity.update({
+      where: {temperature_humidityid: + req.params.id},
+      data: req.body
+    });
+    res.json(updatedTemperature);
+
+});
 
 // -------------------------
 // [DELETE] temp_hum activity 

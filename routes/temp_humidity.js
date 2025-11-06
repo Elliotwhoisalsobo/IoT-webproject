@@ -58,19 +58,34 @@ router.put('/:id', async (req, res) => {
 });
 
 // -------------------------
-// [DELETE] temp_hum activity 
+// [DELETE] temp_hum activity  
 // return boolean (true or false )
+// SOFT DELETION !!!
 // -------------------------
 router.delete('/:id', async (req, res) => {
-  const temperature_humidityid = req.body.temp_humidity;
 
-  const deleted_temperature = await prisma.temp_humidity.delete({
-    where: {
-      temperature_humidityid: parseInt(temperature_humidityid)
+    const id = parseInt(req.params.id);
+    // Update "isdeleted" with current timestamp instead of deleting
+    await prisma.$executeRawUnsafe(
+      `UPDATE temperature_humidity SET isdeleted = CURRENT_TIMESTAMP WHERE temperature_humidityid = ${id}`
+    );
+    res.json({ success: true, message: `Record ${id} timestamped & marked as deleted` });
+});
+
+
+
+
+
+// router.delete('/:id', async (req, res) => {
+//   const temperature_humidityid = req.body.temp_humidity;
+
+//   const deleted_temperature = await prisma.temp_humidity.delete({
+//     where: {
+//       temperature_humidityid: parseInt(temperature_humidityid)
       
-    }
-  })
-  res.send(deleted_temperature);
-})
+//     }
+//   })
+//   res.send(deleted_temperature);
+// })
 
 module.exports = router;

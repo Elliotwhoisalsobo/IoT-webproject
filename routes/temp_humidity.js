@@ -12,6 +12,9 @@ const prisma = new PrismaClient();
 // -------------------------
 router.get('/', async (req, res) => {
   const temp_hum = await prisma.temperature_humidity.findMany({
+    where: {
+      isdeleted: null,
+    },
     include: {
       sensors: true // INNER JOIN
       // perhaps add more here, or is this only for joins?

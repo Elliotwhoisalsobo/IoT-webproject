@@ -12,6 +12,9 @@ const prisma = new PrismaClient();
 // -------------------------
 router.get('/', async (req, res) => {
   const led = await prisma.led_activity.findMany({
+    where: {
+      isdeleted: null,
+    },
     include: {
       sensors: true // INNER JOIN
     }

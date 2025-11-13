@@ -6,33 +6,17 @@ const router = express.Router();
 
 const { PrismaClient } = require('../generated/prisma');
 const prisma = new PrismaClient();
+
+
 // -------------------------
 // [GET] Login
 // return array of login (users)
 // -------------------------
-// COMPLETE THIS ROUTE
 router.get('/', async (req, res) => {
   const login = await prisma.login.findMany();
   res.json(login)
 })
   
-
-// router.get('/', async (req, res) => {
-//   // @todo: link to database
-//   const ranking = await prisma.$queryRaw`
-//   SELECT 
-//   s.name songname, a.name artistname, SUM(v.points) sum 
-//   FROM Votes AS v
-// 	INNER JOIN Songs s USING(song_id)
-//     INNER JOIN Artists a USING(artist_id)
-//     GROUP BY
-// 	s.song_id
-//     ORDER BY 
-//     SUM(v.points) DESC;`
-
-//   res.json(ranking);
-// })
-
 // -------------------------
 // [POST] Login
 // return id (id kan ook null zijn, niet gelukt )
@@ -78,6 +62,7 @@ router.put('/:userid', async (req, res) => {
 // return boolean (true or false )
 // -------------------------
 
+// Deletion will not be implemented since we work with static (unchanging) users/passwords
 
 
 module.exports = router;

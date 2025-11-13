@@ -41,8 +41,6 @@ router.post('/', async (req, res) => {
 });
 
 
-
-
 // -------------------------
 // [PUT] Devices 
 // return boolean (true or false )
@@ -77,12 +75,5 @@ router.delete('/:id', async (req, res) => {
     );
     res.json({ success: true, message: `Record ${id} timestamped & marked as deleted` });
 });
-
-
-// HARD DELETION
-// router.delete('/:id', (req, res) => {
-//   // @todo: link to database
-//   res.send("Deleted device");
-// })
 
 module.exports = router;

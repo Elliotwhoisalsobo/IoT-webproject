@@ -12,7 +12,11 @@ const prisma = new PrismaClient();
 // return array of device
 // -------------------------
 router.get('/', async (req, res) => { // async = db enabled
-  const device = await prisma.device.findMany();
+  const device = await prisma.device.findMany({
+    where: {
+      isdeleted: null, // EXCLUDED deleted : )
+    },
+  });
   res.json(device);
 })
 

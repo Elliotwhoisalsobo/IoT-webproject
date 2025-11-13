@@ -13,13 +13,18 @@ const prisma = new PrismaClient();
 // return id (id kan ook null zijn, niet gelukt )
 // -------------------------
 router.get('/', async (req, res) => {
-    const sensors = await prisma.sensors.findMany({
-        include: {
-            device: true
-        }
-    });
-    res.json(sensors);
-})
+  const sensors = await prisma.sensors.findMany({
+    where: {
+      isdeleted: null, // only non-deleted sensors
+    },
+    include: {
+      device: true,
+    },
+  });
+
+  res.json(sensors);
+});
+
 
 // -------------------------
 // [POST] Sensors 
@@ -57,29 +62,32 @@ router.post('/', async (req, res) => {
 // ----------------------
 
 // WORKS --> http://localhost:3000/sensor/2
+
+// SOFT DELETION
 router.delete('/:id', async (req, res) => {
-    const sensorid = req.params.id;
 
-    const deletedSensor = await prisma.sensors.delete({
-    where: {
-        sensorid: parseInt(sensorid)
-      }
-    })
-    res.send(deletedSensor);
-})
+    const id = parseInt(req.params.id);
+    // Update "isdeleted" with current timestamp instead of deleting
+    await prisma.$executeRawUnsafe(
+      `UPDATE sensors SET isdeleted = CURRENT_TIMESTAMP WHERE sensorid = ${id}`
+    );
+    res.json({ success: true, message: `Record ${id} timestamped & marked as deleted` });
+});
 
 
+// HARD DELETION
 // router.delete('/:id', async (req, res) => {
-//   const songId = req.params.id;
+//     const sensorid = req.params.id;
 
-//   const deletedSong = await prisma.songs.delete({
+//     const deletedSensor = await prisma.sensors.delete({
 //     where: {
-//       song_id: parseInt(songId)
-//     }
-//   });
-
-//   res.send(deletedSong);
+//         sensorid: parseInt(sensorid)
+//       }
+//     })
+//     res.send(deletedSensor);
 // })
+
+
 
 
 

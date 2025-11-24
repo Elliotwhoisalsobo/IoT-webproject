@@ -1,12 +1,11 @@
 // import from node_modules
 const express = require('express')
-
-// blijkbaar bestaat er een functie express(), 
-// ik ga dit toevoegen in de variable app
-// en later settings aan toe voegen
+const cors = require("cors");
 const app = express()
+
+app.use(cors());
+//app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json()); // my app may send and receive json data !!!
-console.log("API IS UP AND RUNNING!!!")
 
 // Endpoints 
 const deviceRouter = require('./routes/device');
@@ -21,5 +20,7 @@ app.use('/temp_humidity', temp_humidityRouter);
 app.use('/login', loginRouter);
 app.use('/led', ledRouter);
 app.use('/sensor', sensorRouter);
+
+console.log("API IS UP AND RUNNING!!!")
 
 app.listen(3000)

@@ -2,7 +2,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 // ------ Pages 
-import Devices from "@/pages/Devices.vue";
+import Device from "@/pages/Devices.vue";
+import Login from "@/pages/Login.vue";
 //import Sensors from "@/pages/Sensors.vue";
 //import Temperature from "@/pages/Temperature.vue";
 //import Led from "@/pages/Led_Activity.vue";
@@ -11,9 +12,15 @@ import Devices from "@/pages/Devices.vue";
 // ------ Config of routes 
 const routes = [
     {
-        path: '/devices',
-        name: 'devices',
-        component: Devices
+      path: '/login',
+      name: 'login',
+      component: Login
+    },
+  
+    {
+        path: '/device',
+        name: 'device',
+        component: Device
     },
     // {
     //     path: '/sensors',

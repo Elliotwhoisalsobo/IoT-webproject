@@ -25,6 +25,7 @@ router.get('/', async (req, res) => { // async = db enabled
 // return id (id kan ook null zijn, niet gelukt )
 // -------------------------
 router.post('/', async (req, res) => { 
+    console.log("Received body:", req.body);
     const { device_name, device_purpose, device_ip, status } = req.body;
 
     const device = await prisma.device.create({
@@ -37,7 +38,8 @@ router.post('/', async (req, res) => {
     });
 
     console.log(device_name, device_purpose, device_ip, status);
-    res.send(device);
+    res.json(device);
+    //res.send(device); // Causes JSON parsing error when adding stuff from the website itself
 });
 
 

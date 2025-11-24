@@ -19,23 +19,37 @@ router.get('/', async (req, res) => {
   
 // -------------------------
 // [POST] Login
-// return id (id kan ook null zijn, niet gelukt )
+// LOGIN AUTHENTICATION
 // -------------------------
 router.post('/', async (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
+    const { username, password } = req.body;
 
-  const newUser = await prisma.login.create({ // ERROR
-    data: {
-      username: username,
-      password: password
+    if (!username || !password) {
+        return res.status(400).json({ error: 'Username and password are required' });
     }
-  })
-  res.send(newUser);
 
-  console.log(username);
-  console.log(password);
-})
+    try {
+        const user = await prisma.login.findFirst({
+            where: {
+                username: username,
+                password: password
+            }
+        });
+
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid credentials' }); // Maybe add this for add new devices too?
+        }
+
+        // Determine role: you said admin = 'admin', else 'user'
+        const role = user.username === 'admin' ? 'admin' : 'user';
+
+        res.json({ userid: user.userid, username: user.username, role });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
 
 
 

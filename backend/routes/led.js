@@ -6,6 +6,26 @@ const router = express.Router();
 
 const { PrismaClient } = require('../generated/prisma'); // prisma can run raw sql
 const prisma = new PrismaClient();
+
+
+
+// RASPI PI STUFF
+
+// backend/routes/led.js (example)
+const axios = require("axios"); // Look this up later
+
+router.post("/led", async (req, res) => {
+    const { state } = req.body;
+    try {
+        await axios.post("http://10.10.0.151:5000/led", { state }); // Pi IP
+        res.json({ ok: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+
 // -------------------------
 // [GET] led activity 
 // return array of led activity
@@ -66,7 +86,7 @@ router.delete('/:id', async (req, res) => {
       
     }
   })
-  res.send("Deleted led activity");
+  //res.send("Deleted led activity");
   res.send(deletedLed);
 })
 

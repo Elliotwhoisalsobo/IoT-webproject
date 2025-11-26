@@ -4,9 +4,10 @@ import { createRouter, createWebHistory } from 'vue-router';
 // ------ Pages 
 import Device from "@/pages/Devices.vue";
 import Login from "@/pages/Login.vue";
+import Led from "@/pages/Led.vue";
 //import Sensors from "@/pages/Sensors.vue";
 //import Temperature from "@/pages/Temperature.vue";
-//import Led from "@/pages/Led_Activity.vue";
+
 
 
 // ------ Config of routes 
@@ -32,11 +33,11 @@ const routes = [
     //     name: 'temperature',
     //     component: Temperature
     // },
-    // {
-    //     path: '/led',
-    //     name: 'led',
-    //     component: Led
-    // },
+    {
+        path: '/led',
+        name: 'led',
+        component: Led
+    },
 ];
 
 // Export to use in main.js

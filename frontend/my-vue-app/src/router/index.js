@@ -6,7 +6,7 @@ import Device from "@/pages/Devices.vue";
 import Login from "@/pages/Login.vue";
 import Led from "@/pages/Led.vue";
 //import Sensors from "@/pages/Sensors.vue";
-//import Temperature from "@/pages/Temperature.vue";
+import Temperature from "@/pages/Temperature.vue";
 
 
 
@@ -28,11 +28,11 @@ const routes = [
     //     name: 'Sensors',
     //     component: Sensors
     // },
-    // {
-    //     path: '/temperature',
-    //     name: 'temperature',
-    //     component: Temperature
-    // },
+     {
+         path: '/temperature',
+         name: 'temperature',
+         component: Temperature
+     },
     {
         path: '/led',
         name: 'led',

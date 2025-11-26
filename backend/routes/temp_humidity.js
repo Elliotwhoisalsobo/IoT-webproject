@@ -78,7 +78,7 @@ router.delete('/:id', async (req, res) => {
 
 
 
-
+// HARD DELETE
 // router.delete('/:id', async (req, res) => {
 //   const temperature_humidityid = req.body.temp_humidity;
 

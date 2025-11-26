@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 
 // -------------------------
 // [GET] Devices 
-// return array of device
+// return array of ALL deviceS
 // -------------------------
 router.get('/', async (req, res) => { // async = db enabled
   const device = await prisma.device.findMany({
@@ -41,7 +41,6 @@ router.post('/', async (req, res) => {
     res.json(device);
     //res.send(device); // Causes JSON parsing error when adding stuff from the website itself
 });
-
 
 // -------------------------
 // [PUT] Devices 

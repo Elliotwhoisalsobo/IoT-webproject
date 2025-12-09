@@ -46,12 +46,6 @@ router.post('/', async (req, res) => {
 // [PUT] Devices 
 // return boolean (true or false )
 // -------------------------
-// router.put('/:id', (req, res) => {
-//   // @todo: link to database
-//   // req.body -> om data uit een put te halen
-//   res.send("Updated device");
-// })
-
 router.put('/:id', async (req, res) => {
 
     const updatedDevice = await prisma.device.update({

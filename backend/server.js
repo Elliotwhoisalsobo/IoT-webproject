@@ -23,6 +23,11 @@ app.use('/login', loginRouter);
 app.use('/led', ledRouter);
 app.use('/sensor', sensorRouter);
 
+// ---------------- Health check ----------------
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok', message: 'Node backend is online' });
+});
+
 console.log("API IS UP AND RUNNING!!!")
 
 app.listen(3000, '0.0.0.0') // Laptop IP at dorm --> 10.10.0.188

@@ -1,5 +1,6 @@
 <!--
     Settings van de pagina
+    10.10.0.151
 -->
 <script setup>
     // Imports
@@ -55,7 +56,7 @@
             return; // Stop the function here
         }
 
-        fetch("http://localhost:3000/device/", {
+        fetch("http://localhost:3000/device", {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

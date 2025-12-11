@@ -26,14 +26,20 @@ dht = DHT.DHT(DHTPin)
 rgb_pins = [29, 31, 33]  # Pins --> R:29, G:31, B:33
 pwmRed = pwmGreen = pwmBlue = None
 
-# Button (optional)
-buttonPin = 40
+# Buttons 
+blueButtonPin = 40 
+greenButtonPin = 37
+redButtonPin = 38
+yellowButtonPin = 36
+buttonPins = [blueButtonPin, greenButtonPin, redButtonPin, yellowButtonPin]
+
+
 
 # Initialize GPIO
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(rgb_pins, GPIO.OUT)
 GPIO.output(rgb_pins, GPIO.HIGH)  # start off
-GPIO.setup(buttonPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(buttonPins, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 # Setting frequency to 2kHz
 pwmRed = GPIO.PWM(rgb_pins[0], 2000)
@@ -101,6 +107,22 @@ def read_dht():
         time.sleep(0.1)
     return None, None
 
+def buttons():
+    while True:
+        if GPIO.input(blueButtonPin)==GPIO.LOW: # if button is pressed
+            print ('BLUE button>>>')     # print information on terminal
+            time.sleep(0.35)
+        elif GPIO.input(redButtonPin)==GPIO.LOW:
+            print ('RED button>>>')
+            time.sleep(0.35)
+        elif GPIO.input(greenButtonPin)==GPIO.LOW:
+            print ('GREEN button>>>')
+            time.sleep(0.35)
+        elif GPIO.input(yellowButtonPin)==GPIO.LOW:
+            print ('YELLOW button>>>')
+            time.sleep(0.35)
+    
+
 
 def cleanup():
     lcd.clear()
@@ -123,6 +145,16 @@ def led_control():
         setColor(0, 0, 0)
 
     return jsonify({"ok": True, "state": state, "color": color})
+
+@app.route("/buttons", methods=["GET"])
+def buttons_state():
+    states = {
+        "blue": GPIO.input(blueButtonPin) == GPIO.LOW,
+        "red": GPIO.input(redButtonPin) == GPIO.LOW,
+        "green": GPIO.input(greenButtonPin) == GPIO.LOW,
+        "yellow": GPIO.input(yellowButtonPin) == GPIO.LOW
+    }
+    return jsonify(states)
 
 @app.route("/sensor", methods=["GET"])
 def sensor():
@@ -148,22 +180,29 @@ def update_lcd_health():
 # ---------------- Main ----------------
 if __name__ == "__main__":
     try:
-        try: 
-            threading.Thread(target=update_lcd_health, daemon=True).start()
-            requests.post("http://10.10.0.188:3000/api/pi-data", json={"script": "pi_server.py", "status": "WORKING"}, timeout=2) # prevents pi from hanging on boot if laptop is offline
-            setColor(0,0,0) # Avoids the rgb led from being it's default super bright blue color
+        # LCD and Node.js reporting thread
+        threading.Thread(target=update_lcd_health, daemon=True).start()
+
+        try:
+            requests.post("http://10.10.0.188:3000/api/pi-data",
+                          json={"script": "pi_server.py", "status": "WORKING"}, timeout=2)
+            setColor(0, 0, 0)
             print("Sent boot confirmation to backend (node.js)")
         except Exception as e:
             print("Failed to send status to Node.js:", e)
-            requests.post("http://10.10.0.188:3000/api/pi-data", json={"script": "pi_server.py", "status": "NOT WORKING", "error": str(e)}, timeout=2)
+            requests.post("http://10.10.0.188:3000/api/pi-data",
+                          json={"script": "pi_server.py", "status": "NOT WORKING", "error": str(e)}, timeout=2)
+
+        # Start buttons thread
+        threading.Thread(target=buttons, daemon=True).start()
 
         print("Pi server running on http://0.0.0.0:5000")
         print("PYTHON SERVER STATUS: Flask backend started successfully!")
         app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
         print("PYTHON SERVER STATUS: Flask backend has stopped succesfully!")
+
     except KeyboardInterrupt:
         print("Stopping server...")
     finally:
         cleanup()
-
 

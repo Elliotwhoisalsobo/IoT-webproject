@@ -4,7 +4,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 // ------ Pages 
 import Device from "@/pages/Devices.vue";
 import Login from "@/pages/Login.vue";
-import Led from "@/pages/Led.vue";
+import Controls from "@/pages/Controls.vue";
 //import Sensors from "@/pages/Sensors.vue";
 import Temperature from "@/pages/Temperature.vue";
 
@@ -34,9 +34,9 @@ const routes = [
          component: Temperature
      },
     {
-        path: '/led',
-        name: 'led',
-        component: Led
+        path: '/controls',
+        name: 'controls',
+        component: Controls
     },
 ];
 

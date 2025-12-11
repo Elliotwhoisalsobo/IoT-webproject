@@ -9,7 +9,7 @@
       <RouterLink to="/device">Devices</RouterLink>&nbsp;
       <RouterLink to="/sensors">Sensors</RouterLink>&nbsp;
       <RouterLink to="/temperature">Temperature</RouterLink>&nbsp;
-      <RouterLink to="/led">Led</RouterLink>&nbsp;
+      <RouterLink to="/controls">Controls</RouterLink>&nbsp;
     </nav>
 
     <RouterView />

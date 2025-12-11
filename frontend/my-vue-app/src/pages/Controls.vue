@@ -53,7 +53,7 @@ async function fetchButtonState() {
   }
 }
 
-onMounted(() => {
+  onMounted(() => {
   intervalId = setInterval(fetchButtonState, 150); // poll every 150ms
 });
 
@@ -61,6 +61,7 @@ onUnmounted(() => {
   clearInterval(intervalId);
 });
 </script>
+
 
 <template>
   <div class="dashboard">

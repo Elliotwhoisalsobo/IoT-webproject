@@ -12,6 +12,7 @@ const prisma = new PrismaClient();
 // RASPI PI STUFF
 
 // backend/routes/led.js (example)
+// RGB LED
 const axios = require("axios"); // Look this up later
 
 router.post("/led", async (req, res) => {
@@ -24,7 +25,18 @@ router.post("/led", async (req, res) => {
     }
 });
 
+// BUTTONS
+// Example: GET button states from Raspberry Pi
+router.get('/button', async (req, res) => {
+  try {
+    const response = await axios.get('http://10.10.0.151:5000/buttons'); // new Flask endpoint
+    res.json(response.data); // { blue: true/false, red: true/false, ... }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
+module.exports = router;
 
 // -------------------------
 // [GET] led activity 

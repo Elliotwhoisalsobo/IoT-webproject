@@ -6,9 +6,12 @@ from time import sleep
 from flask import Flask, request, jsonify
 import Freenove_DHT as DHT
 from flask_cors import CORS
+from flask_sock import Sock
 import requests
 from PCF8574 import PCF8574_GPIO
 from Adafruit_LCD1602 import Adafruit_CharLCD
+import json
+
 
 
 # Disable PWM destructor to prevent shutdown errors
@@ -84,7 +87,7 @@ def setColor(r_val, g_val, b_val):
     - decide on ANODE version (common anode for my FREENOVE RGBLED module)
     """
     # Calibration multipliers for better visual balance
-    red_multiplier = 0.9
+    red_multiplier =  0.9
     green_multiplier = 1.0
     blue_multiplier = 1.2
 
@@ -121,6 +124,14 @@ def buttons():
         elif GPIO.input(yellowButtonPin)==GPIO.LOW:
             print ('YELLOW button>>>')
             time.sleep(0.35)
+
+def get_button_states():
+    return {
+        "blue": GPIO.input(blueButtonPin) == GPIO.LOW,
+        "red": GPIO.input(redButtonPin) == GPIO.LOW,
+        "green": GPIO.input(greenButtonPin) == GPIO.LOW,
+        "yellow": GPIO.input(yellowButtonPin) == GPIO.LOW
+    }
     
 
 
@@ -133,6 +144,7 @@ def cleanup():
 # ---------------- Flask Server ----------------
 app = Flask(__name__)
 CORS(app)
+sock = Sock(app)
 @app.route("/led", methods=["POST"])
 def led_control():
     data = request.json
@@ -146,15 +158,6 @@ def led_control():
 
     return jsonify({"ok": True, "state": state, "color": color})
 
-@app.route("/buttons", methods=["GET"])
-def buttons_state():
-    states = {
-        "blue": GPIO.input(blueButtonPin) == GPIO.LOW,
-        "red": GPIO.input(redButtonPin) == GPIO.LOW,
-        "green": GPIO.input(greenButtonPin) == GPIO.LOW,
-        "yellow": GPIO.input(yellowButtonPin) == GPIO.LOW
-    }
-    return jsonify(states)
 
 @app.route("/sensor", methods=["GET"])
 def sensor():
@@ -166,20 +169,63 @@ def sensor():
         "device": "raspberry-pi-5"
     })
 
+
+# ---------------- WebSocket ----------------
+ws_clients = set()
+
+@sock.route('/ws')
+def websocket(ws):
+    ws_clients.add(ws)
+    # send initial state
+    ws.send(json.dumps(get_button_states()))
+    try:
+        while True:
+            msg = ws.receive()  # keep connection alive
+            if msg is None:
+                break
+    finally:
+        ws_clients.remove(ws)
+
+def broadcast_buttons():
+    """Broadcast button changes only when state changes"""
+    last_state = get_button_states() # use helper
+    while True:
+        current_state = get_button_states()
+        if current_state != last_state:
+            msg = json.dumps(current_state)
+            for ws in list(ws_clients):
+                try:
+                    ws.send(msg)
+                except:
+                    ws_clients.remove(ws)
+            last_state = current_state
+        time.sleep(0.05)  # check every 50ms
+
+
+
+
+# ---------------- LCD Node.js health check ----------------
 def update_lcd_health():
     while True:
         try:
             requests.get("http://10.10.0.188:3000/health", timeout=0.5)
-            lcd.setCursor(0, 0)
-            lcd.message('Website Online!  ')
+            lcd.setCursor(0,0)
+            lcd.message("Website Online!  ")
         except:
-            lcd.setCursor(0, 0)
+            lcd.setCursor(0,0)
             lcd.clear()
             lcd.message("Website Offline! ")
-        time.sleep(5)  # check every 5 seconds
+        time.sleep(5)
+
+
+
 # ---------------- Main ----------------
 if __name__ == "__main__":
     try:
+
+        # Start WebSocket broadcast thread
+        threading.Thread(target=broadcast_buttons, daemon=True).start()
+
         # LCD and Node.js reporting thread
         threading.Thread(target=update_lcd_health, daemon=True).start()
 
@@ -193,8 +239,6 @@ if __name__ == "__main__":
             requests.post("http://10.10.0.188:3000/api/pi-data",
                           json={"script": "pi_server.py", "status": "NOT WORKING", "error": str(e)}, timeout=2)
 
-        # Start buttons thread
-        threading.Thread(target=buttons, daemon=True).start()
 
         print("Pi server running on http://0.0.0.0:5000")
         print("PYTHON SERVER STATUS: Flask backend started successfully!")

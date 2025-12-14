@@ -1,6 +1,7 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
 import axios from 'axios';
+import { useWebSocket } from '@vueuse/core'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 
 // ------------------- LED CONTROL -------------------
 const ledState = ref('off');
@@ -41,25 +42,37 @@ const buttonState = ref({
   red: false,
   green: false,
   yellow: false
-});
+})
 
-let intervalId = null;
-async function fetchButtonState() {
+const { status, data, send, open, close } = useWebSocket('ws://10.10.151:5000/ws', {
+  autoReconnect: true,
+  heartbeat: {
+    interval: 10000,
+    message: 'ping',
+  },
+})
+
+// Listen for backend messages
+watch(data, (msg) => {
+  if (!msg) return
   try {
-    const res = await axios.get(`${PI_SERVER}/buttons`);
-    buttonState.value = res.data;
-  } catch (err) {
-    console.error("Error fetching button state:", err);
+    const parsed = JSON.parse(msg)
+    buttonState.value = {
+      blue: parsed.blue,
+      red: parsed.red,
+      green: parsed.green,
+      yellow: parsed.yellow
+    }
+  } catch (e) {
+    console.error("Invalid WS message", msg)
   }
-}
+})
 
-  onMounted(() => {
-  intervalId = setInterval(fetchButtonState, 150); // poll every 150ms
-});
+// Close socket on unmount
+// onUnmounted(() => {
+//   close()
+// })
 
-onUnmounted(() => {
-  clearInterval(intervalId);
-});
 </script>
 
 

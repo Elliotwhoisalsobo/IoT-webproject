@@ -193,6 +193,11 @@
         editDeviceId.value = sensor.deviceid;
     };
 
+    const getDeviceName = (deviceId) => {
+        const device = devices.value.find(d => d.deviceid === deviceId);
+        return device ? device.device_name : "Unknown";
+    };
+
     const cancelEditSensor = () => {
         editingSensorId.value = null;
     };
@@ -256,7 +261,7 @@
 
       
 
-      <h2>Add device</h2>
+      <h2>Add new device</h2>
 
       <input v-model="newDeviceName" placeholder="Name" />
       <input v-model="newDevicePurpose" placeholder="Purpose" />
@@ -275,7 +280,9 @@
 
           <!-- view -->
           <div v-if="editingSensorId !== s.sensorid">
-            {{ s.sensor_name }} | {{ s.sensor_description }} | Device: {{ s.deviceid ?? "none" }}
+            {{ s.sensor_name }} | {{ s.sensor_description }} | Device: {{ s.deviceid ? getDeviceName(s.deviceid) : "none" }}
+
+            
 
             <button @click="startEditSensor(s)">Edit</button>
             <button @click="removeSensor(s.sensorid)">Delete</button>
@@ -296,7 +303,7 @@
 
       <p v-else>No sensors</p>
 
-      <h2>Add sensor</h2>
+      <h2>Add new sensor</h2>
 
       <input v-model="newSensorName" placeholder="Name" />
       <input v-model="newSensorDescription" placeholder="Description" />
@@ -320,6 +327,31 @@
   flex: 1;
   border: 1px solid #ccc;
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  height: 500px; /* Fixed height for both boxes */
+}
+
+.box h1 {
+  margin-top: 0;
+}
+
+.box ul {
+  flex: 1;
+  overflow-y: auto; /* Make list scrollable */
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid #eee;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.box li {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  background: #f9f9f9;
+  border-radius: 4px;
 }
 
 input {
@@ -332,4 +364,3 @@ button {
   margin-right: 0.5rem;
 }
 </style>
-

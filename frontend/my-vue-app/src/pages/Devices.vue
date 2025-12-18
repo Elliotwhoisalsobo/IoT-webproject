@@ -20,7 +20,11 @@
     let newDeviceIP = ref("");
 
     // Data (ref) for editing device records
+    let editingDeviceId = ref(""); // not actually used to edit but to select record
 
+    let editDeviceName = ref("");
+    let editDevicePurpose = ref("");
+    let editDeviceIP = ref("");
 
     // Data (ref) for adding new sensor records
     let sensors = ref([]);
@@ -30,10 +34,12 @@
     let newSensorDescription = ref("");
 
     // Data (ref) for editing sensor records
-    let editingSensorId = ref(null);
+    let editingSensorId = ref(null); // Used to select record not actually edited
+
     let editSensorName = ref("");
     let editSensorDescription = ref("");
     let editDeviceId = ref("");
+
 
     
 
@@ -96,8 +102,42 @@
             newDeviceIP.value = "";
             getDevices();
         })
-        .catch(err => console.error(err));
+        //.catch(err => console.error(err));
     };
+
+
+    // ------ Edit ------
+    const startEditDevice = (device) => {
+        editingDeviceId.value = device.deviceid;
+
+        editDeviceName.value = device.device_name;
+        editDevicePurpose.value = device.device_purpose;
+        editDeviceIP.value = device.device_ip;
+
+        
+    };
+
+
+    const cancelEditDevice = () => {
+        editingDeviceId.value = null;
+    };
+
+    const updateDevice = () => {
+        fetch(`http://localhost:3000/device/${editingDeviceId.value}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                device_name: editDeviceName.value,
+                device_purpose: editDevicePurpose.value,
+                device_ip: editDeviceIP.value
+            })
+        })
+        .then(() => {
+            editingDeviceId.value = null;
+            getDevices();
+        });
+    };
+
 
     // ------ Sensors ------
 
@@ -120,7 +160,7 @@
             body: JSON.stringify({
                 sensor_name: newSensorName.value,
                 sensor_description: newSensorDescription.value,
-                device_id: newDeviceId.value || null,
+                device_ip: newDeviceIP.value || null,
             })
         })
         .then(res => res.json())
@@ -147,6 +187,7 @@
     // ------ Edit ------
     const startEditSensor = (sensor) => {
         editingSensorId.value = sensor.sensorid;
+
         editSensorName.value = sensor.sensor_name;
         editSensorDescription.value = sensor.sensor_description;
         editDeviceId.value = sensor.deviceid;
@@ -187,12 +228,33 @@
 
       <ul v-if="devices.length">
         <li v-for="d in devices" :key="d.deviceid">
-          {{ d.device_name }} | {{ d.device_purpose }} | {{ d.device_ip ?? "no ip" }}
-          <button @click="removeDevice(d.deviceid)">Delete</button>
-        </li>
-      </ul>
 
-      <p v-else>No devices</p>
+
+        <!-- view -->
+          <div v-if="editingDeviceId !== d.deviceid">
+          {{ d.device_name }} | {{ d.device_purpose }} | {{ d.device_ip ?? "no ip" }}
+          
+          <button @click="startEditDevice(d)">Edit</button>
+          <button @click="removeDevice(d.deviceid)">Delete</button>
+          </div>
+
+
+        <!--<p v-else>No devices</p> -->
+          <!-- edit -->
+        <div v-else>
+        <input v-model="editDeviceName" placeholder="Name" />
+        <input v-model="editDevicePurpose" placeholder="Description" />
+        <input v-model="editDeviceId" placeholder="Device IP (optional)" />
+
+        <button @click="updateDevice">Save</button>
+        <button @click="cancelEditDevice">Cancel</button>
+
+        </div>
+
+      </li>
+    </ul>
+
+      
 
       <h2>Add device</h2>
 

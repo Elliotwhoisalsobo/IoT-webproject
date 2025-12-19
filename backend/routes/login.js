@@ -40,7 +40,7 @@ router.post('/', async (req, res) => {
             return res.status(401).json({ error: 'Invalid credentials' }); // Maybe add this for add new devices too?
         }
 
-        // Determine role: you said admin = 'admin', else 'user'
+        // Determine role: admin = 'admin', else 'user'
         const role = user.username === 'admin' ? 'admin' : 'user';
 
         res.json({ userid: user.userid, username: user.username, role });

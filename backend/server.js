@@ -13,7 +13,7 @@ const deviceRouter = require('./routes/device');
 const temp_humidityRouter = require('./routes/temp_humidity');
 const loginRouter = require('./routes/login');
 const ledRouter = require('./routes/led');
-const sensorRouter = require('./routes/sensor'); // error module not found
+const sensorRouter = require('./routes/sensor');
 
 
 app.use('/device', deviceRouter);

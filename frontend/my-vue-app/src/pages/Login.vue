@@ -32,9 +32,9 @@ const login = async () => {
 
         // Redirect based on role
         if (data.role === 'admin') {
-            router.push('/led');
-        } else {
             router.push('/device');
+        } else {
+            router.push('/control');
         }
 
     } catch (err) {

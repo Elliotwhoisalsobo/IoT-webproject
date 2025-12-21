@@ -141,6 +141,31 @@ watch(buttonState, (newState, oldState) => {
   }
 }, { deep: true })
 
+
+// ------------------- TEMPERATURE & HUMIDITY -------------------
+const temperature = ref(null)
+const humidity = ref(null)
+const device = ref('')
+const tempLoading = ref(true)
+
+async function fetchSensorData() {
+  try {
+    const res = await axios.get(`${PI_SERVER}/sensor`)
+    temperature.value = res.data.temperature
+    humidity.value = res.data.humidity
+    device.value = res.data.device
+  } catch (err) {
+    console.error('Failed to fetch sensor data:', err)
+  } finally {
+    tempLoading.value = false
+  }
+}
+
+onMounted(() => {
+  fetchSensorData()
+  setInterval(fetchSensorData, 5000)
+})
+
 </script>
 
 <template>
@@ -180,6 +205,19 @@ watch(buttonState, (newState, oldState) => {
       <p v-if="playerSequence.length">Your progress: {{ playerSequence.length }}/{{ sequence.length }}</p>
     </div>
   </div>
+
+  <hr style="margin: 20px 0">
+
+  <h2 class="centeredtext">Temperature & Humidity</h2>
+
+  <div v-if="tempLoading">Loading sensor data...</div>
+
+  <div v-else class="sensor-data">
+    <p>🌡 Temperature: <strong>{{ temperature }} °C</strong></p>
+    <p>💧 Humidity: <strong>{{ humidity }} %</strong></p>
+    <p>📟 Device: <strong>{{ device }}</strong></p>
+  </div>
+
 </template>
 
 <style scoped>
@@ -239,5 +277,14 @@ watch(buttonState, (newState, oldState) => {
 h2.centeredtext {
   text-align: center;
 }
+
+.sensor-data {
+  text-align: center;
+}
+
+.sensor-data p {
+  margin: 6px 0;
+}
+
 
 </style>

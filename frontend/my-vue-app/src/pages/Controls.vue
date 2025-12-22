@@ -2,6 +2,16 @@
 import axios from 'axios';
 import { useWebSocket } from '@vueuse/core'
 import { ref, onMounted, onUnmounted, watch } from 'vue'
+import RoleBadge from '@/components/RoleBadge.vue';
+import { useRouter } from 'vue-router';
+
+
+// ------------------- LOGOUT -------------------
+const router = useRouter();
+const logout = () => {
+  localStorage.clear();
+  router.push('/login');
+};
 
 // ------------------- LED CONTROL -------------------
 const ledState = ref('off');
@@ -169,6 +179,16 @@ onMounted(() => {
 </script>
 
 <template>
+  <!-- Role Badge -->
+  <div class="page-header">
+    <h1></h1> <!-- Creating space for btn's -->
+    <!-- Right side -->
+    <div class="header-right">
+      <RoleBadge />
+      <button class="logout-btn" @click="logout">Logout</button>
+    </div>
+  </div>
+
   <div class="dashboard">
     <!-- Left Column: LED Control -->
     <div class="led-control">
@@ -187,7 +207,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- Right Column: Pi Button Status & Simon Says -->
+    <!-- Middle Column: Pi Button Status & Simon Says -->
     <div class="button-status">
       <h2>Pi Button States</h2>
       <div :style="{ color: buttonState.blue ? 'blue' : 'gray' }">Blue Button: {{ buttonState.blue ? 'Pressed' : 'Released' }}</div>
@@ -204,57 +224,54 @@ onMounted(() => {
       <p v-if="sequence.length">Sequence length: {{ sequence.length }}</p>
       <p v-if="playerSequence.length">Your progress: {{ playerSequence.length }}/{{ sequence.length }}</p>
     </div>
+
+    <!-- Right Column: Temperature & Humidity -->
+    <div class="temp-humidity">
+      <h2 class="centeredtext">Temperature & Humidity</h2>
+      <div v-if="tempLoading">Loading sensor data...</div>
+      <div v-else class="sensor-data">
+        <p>🌡 Temperature: <strong>{{ temperature }} °C</strong></p>
+        <p>💧 Humidity: <strong>{{ humidity }} %</strong></p>
+        <p>📟 Device: <strong>{{ device }}</strong></p>
+      </div>
+    </div>
   </div>
-
-  <hr style="margin: 20px 0">
-
-  <h2 class="centeredtext">Temperature & Humidity</h2>
-
-  <div v-if="tempLoading">Loading sensor data...</div>
-
-  <div v-else class="sensor-data">
-    <p>🌡 Temperature: <strong>{{ temperature }} °C</strong></p>
-    <p>💧 Humidity: <strong>{{ humidity }} %</strong></p>
-    <p>📟 Device: <strong>{{ device }}</strong></p>
-  </div>
-
 </template>
 
 <style scoped>
 .dashboard {
   display: flex;
   justify-content: space-between;
-  max-width: 900px;
+  max-width: 1200px; /* a bit wider for three columns */
   margin: 20px auto;
   font-family: sans-serif;
 }
 
-.led-control, .button-status {
-  width: 45%;
+.led-control, .button-status, .temp-humidity {
+  width: 30%; /* three equal columns */
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 8px;
 }
 
+/* LED Control styles */
 .led-control button {
   margin-right: 10px;
   margin-bottom: 10px;
 }
-
 .led-control label {
   display: block;
   margin-bottom: 5px;
 }
-
 .led-control input[type="range"] {
   width: 100%;
 }
 
+/* Button Status & Simon Says styles */
 .button-status div {
   margin: 8px 0;
   font-weight: bold;
 }
-
 .button-status button {
   padding: 10px 20px;
   font-size: 16px;
@@ -263,27 +280,65 @@ onMounted(() => {
   border: none;
   border-radius: 4px;
   cursor: pointer;
- 
   display: block;  
   margin: 0 auto;
-  
 } 
-
 .button-status button:disabled {
   background: #ccc;
   cursor: not-allowed;
 }
 
+/* Centered text */
 h2.centeredtext {
   text-align: center;
 }
 
+/* Sensor Data styles */
 .sensor-data {
   text-align: center;
 }
-
 .sensor-data p {
   margin: 6px 0;
+}
+
+/* Page header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 0 16px;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logout-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  background-color: #444;
+  color: white;
+}
+.logout-btn:hover {
+  background-color: #222;
+}
+
+.led-control, .button-status, .temp-humidity {
+  width: 30%; /* three equal columns */
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+
+  /* Add flex centering */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* vertical centering */
+  align-items: center;     /* horizontal centering */
+  text-align: center;      /* ensures inline text is centered */
 }
 
 

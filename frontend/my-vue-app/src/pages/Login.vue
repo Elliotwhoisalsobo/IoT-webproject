@@ -30,11 +30,21 @@ const login = async () => {
             return;
         }
 
+
+        // After successful login --> store user session data
+        localStorage.setItem('role', data.role);
+        localStorage.setItem('username', data.username);
+        localStorage.setItem('userid', data.userid);
+
+
         // Redirect based on role
         if (data.role === 'admin') {
+            localStorage.setItem('role', data.role);
             router.push('/device');
         } else {
+            localStorage.setItem('role', data.role);
             router.push('/control');
+            // Role is now globally available
         }
 
     } catch (err) {
@@ -42,6 +52,7 @@ const login = async () => {
         errorMessage.value = 'Server error';
     }
 };
+
 </script>
 
 <template>

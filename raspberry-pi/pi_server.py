@@ -21,10 +21,6 @@ def safe_del(self):
 GPIO.PWM.__del__ = safe_del
 
 # ---------------- GPIO PIN SETUP ----------------
-# DHT sensor
-DHTPin = 16
-dht = DHT.DHT(DHTPin)
-
 # RGB LED pins
 rgb_pins = [29, 31, 33]  # Pins --> R:29, G:31, B:33
 pwmRed = pwmGreen = pwmBlue = None
@@ -36,12 +32,15 @@ redButtonPin = 38
 yellowButtonPin = 36
 buttonPins = [blueButtonPin, greenButtonPin, redButtonPin, yellowButtonPin]
 
+# DHT sensor - 
+DHTPin = 16
+dht = DHT.DHT(DHTPin)
 
 
 # Initialize GPIO
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(rgb_pins, GPIO.OUT)
-GPIO.output(rgb_pins, GPIO.HIGH)  # start off
+GPIO.output(rgb_pins, GPIO.HIGH)  # start offcc
 GPIO.setup(buttonPins, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 # Setting frequency to 2kHz
@@ -87,7 +86,7 @@ def setColor(r_val, g_val, b_val):
     - decide on ANODE version (common anode for my FREENOVE RGBLED module)
     """
     # Calibration multipliers for better visual balance
-    red_multiplier =  0.9
+    red_multiplier = 0.9
     green_multiplier = 1.0
     blue_multiplier = 1.2
 
@@ -103,6 +102,7 @@ def setColor(r_val, g_val, b_val):
 
 def read_dht():
     """Read DHT11 sensor and return humidity and temperature."""
+    """FREENOVE DHT LIBRARY --> NOT FULLY THREAD SAFE --> WILL CREATE ERRORS!!! (not avoidable)"""
     for i in range(15):  # retry up to 15 times
         result = dht.readDHT11()
         if result == dht.DHTLIB_OK:
@@ -171,35 +171,63 @@ def sensor():
 
 
 # ---------------- WebSocket ----------------
-ws_clients = set()
+# Buttons WS
+ws_buttons_clients = set()
 
-@sock.route('/ws')
-def websocket(ws):
-    ws_clients.add(ws)
-    # send initial state
+@sock.route('/ws/buttons')
+def ws_buttons(ws):
+    ws_buttons_clients.add(ws)
     ws.send(json.dumps(get_button_states()))
     try:
         while True:
-            msg = ws.receive()  # keep connection alive
+            msg = ws.receive()
             if msg is None:
                 break
     finally:
-        ws_clients.remove(ws)
+        ws_buttons_clients.remove(ws)
 
 def broadcast_buttons():
-    """Broadcast button changes only when state changes"""
-    last_state = get_button_states() # use helper
+    last_state = get_button_states()
     while True:
         current_state = get_button_states()
         if current_state != last_state:
             msg = json.dumps(current_state)
-            for ws in list(ws_clients):
-                try:
-                    ws.send(msg)
-                except:
-                    ws_clients.remove(ws)
+            for ws in list(ws_buttons_clients):
+                try: ws.send(msg)
+                except: ws_buttons_clients.remove(ws)
             last_state = current_state
-        time.sleep(0.05)  # check every 50ms
+        time.sleep(0.05)
+
+# DHT WS
+ws_dht_clients = set()
+
+@sock.route('/ws/dht')
+def ws_dht(ws):
+    ws_dht_clients.add(ws)
+    try:
+        while True:
+            msg = ws.receive()
+            if msg is None: break
+    finally:
+        ws_dht_clients.remove(ws)
+
+def broadcast_dht():
+    while True:
+        h, t = read_dht()
+        if h is not None and t is not None:
+            payload = {
+                "type": "sensor",
+                "temperature": t,
+                "humidity": h,
+                "device": "raspberry-pi-5"
+            }
+            msg = json.dumps(payload)
+            for ws in list(ws_dht_clients):
+                try: ws.send(msg)
+                except: ws_dht_clients.remove(ws)
+        time.sleep(2)
+
+
 
 
 
@@ -223,8 +251,11 @@ def update_lcd_health():
 if __name__ == "__main__":
     try:
 
-        # Start WebSocket broadcast thread
+        # Start WebSocket broadcast thread --> buttons
         threading.Thread(target=broadcast_buttons, daemon=True).start()
+        
+        # Start WebSocket broadcast thread --> DHT
+        threading.Thread(target=broadcast_dht, daemon=True).start()
 
         # LCD and Node.js reporting thread
         threading.Thread(target=update_lcd_health, daemon=True).start()
@@ -242,11 +273,11 @@ if __name__ == "__main__":
 
         print("Pi server running on http://0.0.0.0:5000")
         print("PYTHON SERVER STATUS: Flask backend started successfully!")
-        app.run(host="0.0.0.0", port=5000, debug=False, use_reloader=False)
+        app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)
         print("PYTHON SERVER STATUS: Flask backend has stopped succesfully!")
 
     except KeyboardInterrupt:
         print("Stopping server...")
-    finally:
         cleanup()
+
 

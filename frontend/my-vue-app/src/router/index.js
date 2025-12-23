@@ -33,11 +33,11 @@ const routes = [
     //     name: 'Sensors',
     //     component: Sensors
     // },
-     {
-         path: '/temperature',
-         name: 'temperature',
-         component: Temperature
-     },
+    //  {
+    //      path: '/temperature',
+    //      name: 'temperature',
+    //      component: Temperature
+    //  },
     {
         path: '/control',
         name: 'control',

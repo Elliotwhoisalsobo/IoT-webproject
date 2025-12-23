@@ -6,6 +6,7 @@ import RoleBadge from '@/components/RoleBadge.vue';
 import { useRouter } from 'vue-router';
 
 
+
 // ------------------- LOGOUT -------------------
 const router = useRouter();
 const logout = () => {
@@ -47,6 +48,7 @@ async function updateColor() {
 }
 
 // ------------------- BUTTON STATUS -------------------
+// ---------------- Buttons ----------------
 const buttonState = ref({
   blue: false,
   red: false,
@@ -54,28 +56,14 @@ const buttonState = ref({
   yellow: false
 })
 
-const { status, data, send, open, close } = useWebSocket('ws://10.10.151:5000/ws', {
-  autoReconnect: true,
-  heartbeat: {
-    interval: 10000,
-    message: 'ping',
-  },
+const { data: buttonData } = useWebSocket('ws://10.10.0.151:5000/ws/buttons', {
+  autoReconnect: true
 })
 
-// Listen for backend messages
-watch(data, (msg) => {
+watch(buttonData, (msg) => {
   if (!msg) return
-  try {
-    const parsed = JSON.parse(msg)
-    buttonState.value = {
-      blue: parsed.blue,
-      red: parsed.red,
-      green: parsed.green,
-      yellow: parsed.yellow
-    }
-  } catch (e) {
-    console.error("Invalid WS message", msg)
-  }
+  const parsed = JSON.parse(msg)
+  buttonState.value = parsed
 })
 
 // Close socket on unmount
@@ -153,28 +141,50 @@ watch(buttonState, (newState, oldState) => {
 
 
 // ------------------- TEMPERATURE & HUMIDITY -------------------
+
+
+// ---------------- DHT ----------------
 const temperature = ref(null)
 const humidity = ref(null)
 const device = ref('')
 const tempLoading = ref(true)
-
-async function fetchSensorData() {
-  try {
-    const res = await axios.get(`${PI_SERVER}/sensor`)
-    temperature.value = res.data.temperature
-    humidity.value = res.data.humidity
-    device.value = res.data.device
-  } catch (err) {
-    console.error('Failed to fetch sensor data:', err)
-  } finally {
-    tempLoading.value = false
-  }
-}
+let wsDHT = null
 
 onMounted(() => {
-  fetchSensorData()
-  setInterval(fetchSensorData, 5000)
+  wsDHT = new WebSocket('ws://10.10.0.151:5000/ws/dht')
+
+  wsDHT.onmessage = (event) => {
+    const data = JSON.parse(event.data)
+    temperature.value = data.temperature
+    humidity.value = data.humidity
+    device.value = data.device
+    tempLoading.value = false
+  }
 })
+
+onUnmounted(() => {
+  wsDHT?.close()
+})
+
+
+
+// async function fetchSensorData() {
+//   try {
+//     const res = await axios.get(`${PI_SERVER}/sensor`)
+//     temperature.value = res.data.temperature
+//     humidity.value = res.data.humidity
+//     device.value = res.data.device
+//   } catch (err) {
+//     console.error('Failed to fetch sensor data:', err)
+//   } finally {
+//     tempLoading.value = false
+//   }
+// }
+
+// onMounted(() => {
+//   fetchSensorData()
+//   setInterval(fetchSensorData, 5000)
+// })
 
 </script>
 

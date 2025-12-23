@@ -237,7 +237,7 @@
 
         <!-- view -->
           <div v-if="editingDeviceId !== d.deviceid">
-          {{ d.device_name }} | {{ d.device_purpose }} | {{ d.device_ip ?? "no ip" }}
+          {{ d.deviceid }} | {{ d.device_name }} | {{ d.device_purpose }} | {{ d.device_ip ?? "no ip" }}
           
           <button @click="startEditDevice(d)">Edit</button>
           <button @click="removeDevice(d.deviceid)">Delete</button>

@@ -21,18 +21,18 @@ const humidity = ref(null);
 const device = ref("");
 const loading = ref(true);
 
-async function fetchSensorData() {
-  try {
-    const res = await axios.get("http://10.10.0.151:5000/sensor"); 
-    temperature.value = res.data.temperature;
-    humidity.value = res.data.humidity;
-    device.value = res.data.device;
-  } catch (err) {
-    console.error("Failed to fetch sensor data:", err);
-  } finally {
-    loading.value = false;
-  }
-}
+// async function fetchSensorData() {
+//   try {
+//     const res = await axios.get("http://10.10.0.151:5000/sensor"); 
+//     temperature.value = res.data.temperature;
+//     humidity.value = res.data.humidity;
+//     device.value = res.data.device;
+//   } catch (err) {
+//     console.error("Failed to fetch sensor data:", err);
+//   } finally {
+//     loading.value = false;
+//   }
+// }
 
 onMounted(() => {
   fetchSensorData();

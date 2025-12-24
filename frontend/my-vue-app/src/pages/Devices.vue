@@ -205,21 +205,21 @@
         editingSensorId.value = null;
     };
 
-    const updateSensor = () => {
-        fetch(`http://localhost:3000/sensor/${editingSensorId.value}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                sensor_name: editSensorName.value,
-                sensor_description: editSensorDescription.value,
-                deviceid: editDeviceId.value
-            })
+
+const updateSensor = () => {
+    fetch(`http://localhost:3000/sensor/${editingSensorId.value}`, { // value = 3 = not found???
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            sensor_name: editSensorName.value,
+            sensor_description: editSensorDescription.value,
+            deviceid: editingDeviceId.value || null
         })
-        .then(() => {
-            editingSensorId.value = null;
-            getSensors();
-        });
-    };
+    }).then(() => {
+        editingSensorId.value = null 
+        getSensors()
+    })
+}
 
 
 </script>
@@ -261,7 +261,7 @@
         <div v-else>
         <input v-model="editDeviceName" placeholder="Name" />
         <input v-model="editDevicePurpose" placeholder="Description" />
-        <input v-model="editDeviceId" placeholder="Device IP (optional)" />
+        <input v-model="editDeviceIP" placeholder="Device IP (optional)" />
 
         <button @click="updateDevice">Save</button>
         <button @click="cancelEditDevice">Cancel</button>

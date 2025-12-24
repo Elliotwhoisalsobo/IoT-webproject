@@ -213,13 +213,13 @@ const updateSensor = () => {
         body: JSON.stringify({
             sensor_name: editSensorName.value,
             sensor_description: editSensorDescription.value,
-            deviceid: editingDeviceId.value || null
+            deviceid: Number(editDeviceId.value) || null // Because we are updated a FK --> bound to input --> read as string --> convert to int to work
         })
     }).then(() => {
         editingSensorId.value = null 
         getSensors()
     })
-}
+};
 
 
 </script>

@@ -56,13 +56,35 @@ router.post('/', async (req, res) => {
 
 })
 
+// -------------------------
+// [PUT] Update Sensor
+// -------------------------
+router.put('/:id', async (req, res) => {
+    const id = parseInt(req.params.id);
+    const { sensor_name, sensor_description, deviceid } = req.body;
+
+    try {
+        const updatedSensor = await prisma.sensors.update({
+            where: {
+                sensorid: id
+            },
+            data: {
+                sensor_name: sensor_name,
+                sensor_description: sensor_description,
+                deviceid: deviceid
+            }
+        });
+        res.json(updatedSensor);
+    } catch (error) {
+        console.error('Error updating sensor:', error);
+        res.status(500).json({ error: 'Failed to update sensor' });
+    }
+});
+
 // -----------------------
 // [DELETE] Sensors
 // just input id
 // ----------------------
-
-// WORKS --> http://localhost:3000/sensor/2
-
 // SOFT DELETION
 router.delete('/:id', async (req, res) => {
 

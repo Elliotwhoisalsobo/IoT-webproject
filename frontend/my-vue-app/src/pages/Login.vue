@@ -1,11 +1,18 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 let username = ref('');
 let password = ref('');
 let errorMessage = ref('');
+
+onMounted(() => {
+    // When user arrives at page --> kill session immediately (no longer able to go back to previous page) 
+    // Kills user session
+    localStorage.clear()
+})
+
 
 const login = async () => {
     if (!username.value || !password.value) {

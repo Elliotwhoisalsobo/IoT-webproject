@@ -1,10 +1,13 @@
 <!--
     Settings van de pagina
-    10.10.0.151
+    PI - 10.10.0.151
 -->
 <script setup>
     // Imports
     import { ref, onMounted } from 'vue';
+    import RoleBadge from '@/components/RoleBadge.vue';
+
+
 
     // Life cycles 
     onMounted(() => {
@@ -225,6 +228,15 @@
     Template
 -->
 <template>
+        <!-- Role Badge -->
+  <div class="page-header">
+    <h1></h1> <!-- Creating space for btn's -->
+    <!-- Right side -->
+    <div class="header-right">
+      <RoleBadge />
+      <button class="logout-btn" @click="logout">Logout</button>
+    </div>
+  </div>
   <div class="container">
 
     <!-- DEVICES -->
@@ -363,4 +375,26 @@ input {
 button {
   margin-right: 0.5rem;
 }
+
+.header-right {
+  display: flex;
+  justify-content: flex-end; /* aligns items to the right */
+  align-items: center;       /* vertical alignment */
+  gap: 12px;
+}
+
+.logout-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  background-color: #444;
+  color: white;
+}
+.logout-btn:hover {
+  background-color: #222;
+}
+
+
 </style>

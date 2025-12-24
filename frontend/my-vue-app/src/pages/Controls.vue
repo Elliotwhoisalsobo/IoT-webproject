@@ -324,6 +324,7 @@ h2.centeredtext {
   align-items: center;
   gap: 12px;
 }
+
 .logout-btn {
   padding: 6px 12px;
   border-radius: 6px;

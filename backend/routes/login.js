@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
         });
 
         if (!user) {
-            return res.status(401).json({ error: 'Invalid credentials' }); // Maybe add this for add new devices too?
+            return res.status(401).json({ error: 'Invalid credentials' });
         }
 
         // Determine role: admin = 'admin', else 'user'
@@ -75,8 +75,6 @@ router.put('/:userid', async (req, res) => {
 // [DELETE] Login 
 // return boolean (true or false )
 // -------------------------
-
 // Deletion will not be implemented since we work with static (unchanging) users/passwords
-
 
 module.exports = router;

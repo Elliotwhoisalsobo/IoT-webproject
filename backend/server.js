@@ -16,11 +16,11 @@ const ledRouter = require('./routes/led');
 const sensorRouter = require('./routes/sensor');
 
 
-app.use('/device', deviceRouter);
-app.use('/temp_humidity', temp_humidityRouter);
-app.use('/login', loginRouter);
-app.use('/led', ledRouter);
-app.use('/sensor', sensorRouter);
+app.use('/device', deviceRouter); // IoT devices
+app.use('/temp_humidity', temp_humidityRouter); // DHT11
+app.use('/login', loginRouter); // Simple user/admin
+app.use('/led', ledRouter); // RGB LED
+app.use('/sensor', sensorRouter); // IoT sensors
 
 // ---------------- Health check ----------------
 app.get('/health', (req, res) => {

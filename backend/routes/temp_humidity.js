@@ -4,7 +4,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { PrismaClient } = require('../generated/prisma'); // prisma can run raw sql
+const { PrismaClient } = require('../generated/prisma'); // <-- prisma can now run raw sql
 const prisma = new PrismaClient();
 // -------------------------
 // [GET] temp_hum activity 
@@ -17,7 +17,6 @@ router.get('/', async (req, res) => {
     },
     include: {
       sensors: true // INNER JOIN
-      // perhaps add more here, or is this only for joins?
     }
   });
   res.json(temp_hum);

@@ -10,8 +10,6 @@ const prisma = new PrismaClient();
 
 
 // RASPI PI STUFF
-
-// backend/routes/led.js (example)
 // RGB LED
 const axios = require("axios"); // Look this up later
 

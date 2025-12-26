@@ -41,15 +41,15 @@ The architecture is split into **three logical layers**:
 
 
 ### 🖥 Frontend (Vue.js)
-- User interface for dashboards, sensor data, and hardware control.
+- User interface for sensor data, and raspberry pi control.
 - Realtime updates using WebSockets.
-- Handles login, device/sensor CRUD (admin), and user controls (e.g., LED).
+- Handles login, device/sensor CRUD (admin), and user controls (RGB LED, Buttons).
 
 ### 🧠 Backend (Node.js + Prisma + MySQL)
 - Central server bridging frontend and Raspberry Pi hardware.
 - Stores persistent records of devices and sensors.
 - Implements REST API endpoints and WebSocket message routing.
-- Prisma used as an ORM instead of raw SQL, improving flexibility and migration handling.
+- Prisma used as an ORM instead of raw SQL, improving flexibility.
 
 ### 🛠 Raspberry Pi (Flask Hardware Layer)
 - Python Flask application directly interfaces with GPIO and sensors.
@@ -67,6 +67,47 @@ The architecture is split into **three logical layers**:
   - Backend for business logic and persistence.
   - Raspberry Pi for actual IoT device interaction.
 
+┌─────────────────────────────────────────────────────────────┐
+|                                                             |
+|                     CLIENT (Frontend Vue)                   |
+|                                                             |
+|   • Provides UI for users and admins                        |
+|   • Uses WebSockets for real-time updates                   |
+|   • Uses REST API for CRUD operations                       |
+|                                                             |
+└───────────────────────────▲─────────────────────────────────┘
+                            │
+         REST API / Realtime WebSockets
+                            │
+┌───────────────────────────▼─────────────────────────────────┐
+|                                                             |
+|                   BACKEND SERVER LAYER                      |
+|                                                             |
+|   • Node.js API (CRUD + application logic)                  |
+|   • Prisma ORM (database schema & migrations)               |
+|   • Connects to MySQL database                              |
+|   • Handles authenticated admin routes                      |
+|   • Serves realtime updates over WebSockets                 |
+|                                                             |
+|   • Python/Flask service connects with hardware on the Pi   |
+|     (collects sensor data and forwards it upstream)         |
+|                                                             |
+└───────────────────────────▲─────────────────────────────────┘
+                            │
+          WebSockets / API / LAN connection
+                            │
+┌───────────────────────────▼─────────────────────────────────┐
+|                                                             |
+|        IoT HARDWARE LAYER (Raspberry Pi & Sensors)          |
+|                                                             |
+|   • Flask service on the Pi handling GPIO                   |
+|     (e.g., button presses, LED control)                     |
+|   • DHT temperature & humidity sensor data                  |
+|   • WebSocket bridge to backend                             |
+|   • Acts as IoT device data source                          |
+|                                                             |
+└─────────────────────────────────────────────────────────────┘
+
 ---
 
 ## 💾 Setup & Installation
@@ -75,4 +116,14 @@ The architecture is split into **three logical layers**:
 1. Clone the repo:
    ```bash
    git clone https://github.com/Elliotwhoisalsobo/IoT-webproject.git
+   Console 1
    cd IoT-webproject/backend
+   npm run start
+   Console 2
+   cd frontend
+   cd my-vue-app
+   npn run dev
+   
+   bonus: database record viewing:
+   cd backend
+   npx Prisma Studio

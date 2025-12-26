@@ -220,10 +220,10 @@ onUnmounted(() => {
     <!-- Middle Column: Pi Button Status & Simon Says -->
     <div class="button-status">
       <h2>Pi Button States</h2>
-      <div :style="{ color: buttonState.blue ? 'blue' : 'gray' }">Blue Button: {{ buttonState.blue ? 'Pressed' : 'Released' }}</div>
-      <div :style="{ color: buttonState.green ? 'green' : 'gray' }">Green Button: {{ buttonState.green ? 'Pressed' : 'Released' }}</div>
-      <div :style="{ color: buttonState.red ? 'red' : 'gray' }">Red Button: {{ buttonState.red ? 'Pressed' : 'Released' }}</div>
-      <div :style="{ color: buttonState.yellow ? 'goldenrod' : 'gray' }">Yellow Button: {{ buttonState.yellow ? 'Pressed' : 'Released' }}</div>
+      <div :style="{ color: buttonState.blue ? 'blue' : 'gray' }">Blue Button: {{ buttonState.blue ? 'Pressed' : 'Inactive' }}</div>
+      <div :style="{ color: buttonState.green ? 'green' : 'gray' }">Green Button: {{ buttonState.green ? 'Pressed' : 'Inactive' }}</div>
+      <div :style="{ color: buttonState.red ? 'red' : 'gray' }">Red Button: {{ buttonState.red ? 'Pressed' : 'Inactive' }}</div>
+      <div :style="{ color: buttonState.yellow ? 'goldenrod' : 'gray' }">Yellow Button: {{ buttonState.yellow ? 'Pressed' : 'Inactive' }}</div>
       
       <hr style="margin: 20px 0">
 
@@ -257,12 +257,28 @@ onUnmounted(() => {
   font-family: sans-serif;
 }
 
-.led-control, .button-status, .temp-humidity {
+
+
+.led-control, .button-status {
   width: 30%; /* three equal columns */
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 8px;
 }
+
+.temp-humidity {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;   /* vertical alignment → TOP */
+  align-items: stretch;          /* full width */
+}
+
+.sensor-data {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
 
 /* LED Control styles */
 .led-control button {
@@ -325,19 +341,6 @@ h2.centeredtext {
   gap: 12px;
 }
 
-.logout-btn {
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  font-size: 0.85rem;
-  background-color: #444;
-  color: white;
-}
-.logout-btn:hover {
-  background-color: #222;
-}
-
 .led-control, .button-status, .temp-humidity {
   width: 30%; /* three equal columns */
   padding: 10px;
@@ -352,5 +355,32 @@ h2.centeredtext {
   text-align: center;      /* ensures inline text is centered */
 }
 
+.temp-humidity {
+  width: 30%; /* three equal columns */
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+
+  /* Add flex centering */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* vertical centering | flex-start <-- top text */
+  align-items: center;     /* horizontal centering */
+  text-align: center;      /* ensures inline text is centered */
+}
+
+
+.logout-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  background-color: #444;
+  color: white;
+}
+.logout-btn:hover {
+  background-color: #222;
+}
 
 </style>

@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 
-const role = localStorage.getItem('role');
+const role = localStorage.getItem('role'); // User session
 
 const badgeText = computed(() =>
   role === 'admin' ? 'ADMIN' : 'USER'

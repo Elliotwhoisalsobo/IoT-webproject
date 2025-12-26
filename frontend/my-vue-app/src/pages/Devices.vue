@@ -163,7 +163,7 @@
             body: JSON.stringify({
                 sensor_name: newSensorName.value,
                 sensor_description: newSensorDescription.value,
-                device_ip: newDeviceIP.value || null,
+                deviceid: Number(newDeviceId.value) || null, // number --> otherwise read as string
             })
         })
         .then(res => res.json())

@@ -22,36 +22,56 @@
         getSensors();
     })
 
-    // Data (ref) for adding new device records
-    let devices = ref([]);
+ // =======================================================
+// DEVICE DATA
+// =======================================================
 
-    let newDeviceName = ref("");
-    let newDevicePurpose = ref("");
-    let newDeviceIP = ref("");
+// All device records
+let devices = ref([])
 
-    // Data (ref) for editing device records
-    let editingDeviceId = ref(""); // not actually used to edit but to select record
+// ----------------------
+// New device (ADD FORM)
+// ----------------------
+let newDeviceName = ref("")
+let newDevicePurpose = ref("")
+let newDeviceIP = ref("")
 
-    let editDeviceName = ref("");
-    let editDevicePurpose = ref("");
-    let editDeviceIP = ref("");
+// ----------------------
+// Device editing (EDIT FORM)
+// ----------------------
 
-    // Data (ref) for adding new sensor records
-    let sensors = ref([]);
+// Used only to select which device is being edited
+let editingDeviceId = ref("")
 
-    let newSensorName = ref("");
-    let newDeviceId = ref("");
-    let newSensorDescription = ref("");
-
-    // Data (ref) for editing sensor records
-    let editingSensorId = ref(null); // Used to select record not actually edited
-
-    let editSensorName = ref("");
-    let editSensorDescription = ref("");
-    let editDeviceId = ref("");
+let editDeviceName = ref("")
+let editDevicePurpose = ref("")
+let editDeviceIP = ref("")
 
 
-    
+// =======================================================
+// SENSOR DATA
+// =======================================================
+
+// All sensor records
+let sensors = ref([])
+
+// ----------------------
+// New sensor (ADD FORM)
+// ----------------------
+let newSensorName = ref("")
+let newDeviceId = ref("")
+let newSensorDescription = ref("")
+
+// ----------------------
+// Sensor editing (EDIT FORM)
+// ----------------------
+
+// Used only to select which sensor is being edited
+let editingSensorId = ref(null)
+
+let editSensorName = ref("")
+let editSensorDescription = ref("")
+let editDeviceId = ref("")
 
     // DEBUGGING
 
@@ -66,8 +86,6 @@
     //     devices.value = data;
     // })
     // .catch(err => console.error("Fetch error:", err));
-
-    // ------ Methods ------
 
     // ------ Devices ------
 
@@ -132,6 +150,8 @@
         editingDeviceId.value = null;
     };
 
+
+    // ------ Update ------
     const updateDevice = () => {
         fetch(`http://localhost:3000/device/${editingDeviceId.value}`, {
             method: "PUT",
@@ -192,8 +212,6 @@
     };
 
 
-    
-
     // ------ Edit ------
     const startEditSensor = (sensor) => {
         editingSensorId.value = sensor.sensorid;
@@ -213,20 +231,21 @@
     };
 
 
-const updateSensor = () => {
-    fetch(`http://localhost:3000/sensor/${editingSensorId.value}`, { // value = 3 = not found???
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            sensor_name: editSensorName.value,
-            sensor_description: editSensorDescription.value,
-            deviceid: Number(editDeviceId.value) || null // Because we are updated a FK --> bound to input --> read as string --> convert to int to work
+    // ------ Update ------
+    const updateSensor = () => {
+        fetch(`http://localhost:3000/sensor/${editingSensorId.value}`, { // value = 3 = not found???
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                sensor_name: editSensorName.value,
+                sensor_description: editSensorDescription.value,
+                deviceid: Number(editDeviceId.value) || null // Because we are updated a FK --> bound to input --> read as string --> convert to int to work
+            })
+        }).then(() => {
+            editingSensorId.value = null 
+            getSensors()
         })
-    }).then(() => {
-        editingSensorId.value = null 
-        getSensors()
-    })
-};
+    };
 
 
 </script>

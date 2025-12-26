@@ -6,7 +6,14 @@
     // Imports
     import { ref, onMounted } from 'vue';
     import RoleBadge from '@/components/RoleBadge.vue';
+    import { useRouter } from 'vue-router';
 
+    // ------------------- LOGOUT -------------------
+    const router = useRouter();
+    const logout = () => {
+      localStorage.clear();
+      router.push('/login');
+    };
 
 
     // Life cycles 

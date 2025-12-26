@@ -9,11 +9,11 @@
     import { useRouter } from 'vue-router';
 
     // ------------------- LOGOUT -------------------
-    const router = useRouter();
-    const logout = () => {
-      localStorage.clear();
-      router.push('/login');
-    };
+    // const router = useRouter();
+    // const logout = () => {
+    //   localStorage.clear();
+    //   router.push('/login');
+    // };
 
 
     // Life cycles 
@@ -260,7 +260,6 @@ let editDeviceId = ref("")
     <!-- Right side -->
     <div class="header-right">
       <RoleBadge />
-      <button class="logout-btn" @click="logout">Logout</button>
     </div>
   </div>
   <div class="container">
@@ -409,7 +408,7 @@ button {
   gap: 12px;
 }
 
-.logout-btn {
+/* .logout-btn {
   padding: 6px 12px;
   border-radius: 6px;
   border: none;
@@ -420,7 +419,7 @@ button {
 }
 .logout-btn:hover {
   background-color: #222;
-}
+} */
 
 
 </style>

@@ -8,7 +8,7 @@ let password = ref('');
 let errorMessage = ref('');
 
 onMounted(() => {
-    // When user arrives at page --> kill session immediately (no longer able to go back to previous page) 
+    // When user arrives at page --> kill session immediately --> no longer able to go back to previous page 
     // Kills user session
     localStorage.clear()
 })
@@ -38,7 +38,7 @@ const login = async () => {
         }
 
 
-        // After successful login --> store user session data
+        // After successful login --> store user session data (role, username, userid)
         localStorage.setItem('role', data.role);
         localStorage.setItem('username', data.username);
         localStorage.setItem('userid', data.userid);

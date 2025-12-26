@@ -7,12 +7,12 @@ import { useRouter } from 'vue-router';
 
 
 
-// ------------------- LOGOUT -------------------
-const router = useRouter();
-const logout = () => {
-  localStorage.clear();
-  router.push('/login');
-};
+// // ------------------- LOGOUT -------------------
+// const router = useRouter();
+// const logout = () => {
+//   localStorage.clear();
+//   router.push('/login');
+// };
 
 // ------------------- LED CONTROL -------------------
 const ledState = ref('off');
@@ -195,7 +195,6 @@ onUnmounted(() => {
     <!-- Right side -->
     <div class="header-right">
       <RoleBadge />
-      <button class="logout-btn" @click="logout">Logout</button>
     </div>
   </div>
 
@@ -370,7 +369,7 @@ h2.centeredtext {
 }
 
 
-.logout-btn {
+/* .logout-btn {
   padding: 6px 12px;
   border-radius: 6px;
   border: none;
@@ -381,6 +380,6 @@ h2.centeredtext {
 }
 .logout-btn:hover {
   background-color: #222;
-}
+} */
 
 </style>

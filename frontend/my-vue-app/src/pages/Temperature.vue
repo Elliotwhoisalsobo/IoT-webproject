@@ -13,8 +13,6 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import axios from "axios";
-
 
 const temperature = ref(null);
 const humidity = ref(null);

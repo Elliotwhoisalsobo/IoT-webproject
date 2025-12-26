@@ -1,24 +1,26 @@
-# IoT web controller
+# IoT Web Controller 🎛️🌡️
 
-A project for the course "web fundamentals" real time raspberry pi web controller.
+A real-time **Internet of Things (IoT) web dashboard & controller** built as a project for the course **Web Fundamentals**.  
+This full-stack system lets users and admins interact with Raspberry Pi IoT hardware in real time and manage sensor/device data through a modern web UI.
 
+---
 
-## Features
+## 🚀 Features
 
-- User/admin login
-- Realtime RGB Led controller (user)
-- Realtime button press responder + simon says game (user)
-- CRUD operations for devices/sensors tables (admin)
+### 🧠 User Functionality
+- **Realtime RGB LED control** — change color and power state.
+- **Realtime button feedback** from the Pi.
+- **Simon Says game** powered by physical button presses.
 
+### 👩‍💼 Admin Functionality
+- **CRUD interface** for Devices and Sensors.
+- Admin-only views to manage and organize hardware metadata.
 
-## Architecture
-Pi flask --> Node.js backend (+ mysql Prisma)--> vue.js frontend
+### 🔌 Live Updates
+- Uses WebSockets for instant UI refresh on hardware state changes.
+- Dynamic Vue frontend communicates with IoT backend without page reloads.
 
+---
 
+## 🏗️ Architecture
 
-ps: SQL db file is not provided but instead schema.prisma servers the exact same function and is more flexible then a .sql file
-
-
-
-## License
-- MIT

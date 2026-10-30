@@ -1,129 +1,82 @@
-# IoT Web Controller 🎛️🌡️
+# IoT Web Controller
 
-A real-time **Internet of Things (IoT) web dashboard & controller** built as a project for the course **Web Fundamentals**.  
-This full-stack system lets users and admins interact with Raspberry Pi IoT hardware in real time and manage sensor/device data through a modern web UI.
+An IoT web dashboard for the Web Fundamentals course. It connects a Raspberry Pi
+with real sensors and actuators to a web UI, with realtime updates over WebSockets.
 
----
+## What it does
 
-## 🚀 Features
+- **Users** can control an RGB LED (color + on/off) and play a Simon Says game using
+  the physical button on the Pi.
+- **Admins** get CRUD screens to manage devices and sensors.
+- Sensor data (temperature/humidity from a DHT11) and button presses are pushed live
+  to the frontend, no page reloads.
 
-### 🧠 User Functionality
-- **Realtime RGB LED control** — change color and power state.
-- **Realtime button feedback** from the Pi.
-- **Simon Says game** powered by physical button presses.
+## Architecture
 
-### 👩‍💼 Admin Functionality
-- **CRUD interface** for Devices and Sensors.
-- Admin-only views to manage and organize hardware metadata.
+Three layers, each with its own job:
 
-### 🔌 Live Updates
-- Uses WebSockets for instant UI refresh on hardware state changes.
-- Dynamic Vue frontend communicates with IoT backend without page reloads.
+- **Frontend** (Vue 3 + Vite) — the UI. Talks to the backend over REST for CRUD and
+  WebSockets for live updates.
+- **Backend** (Node.js + Express + Prisma + MySQL) — the bridge. Stores devices and
+  sensors, serves the REST API, and relays Pi data to the frontend.
+- **Raspberry Pi** (Python + Flask) — the hardware layer. Reads the DHT11 and button
+  GPIO pins, drives the LED, and forwards everything upstream.
 
----
+Data flow:
 
-## 🏗️ Architecture
+```
+[ Raspberry Pi / sensors ]  --WebSocket/REST-->  [ Node backend ]  --WebSocket/REST-->  [ Vue frontend ]
+```
 
-This project is a full‑stack IoT web controller that connects **real hardware** (Raspberry Pi) with a **modern web UI** and backend server stacks.
+## Tech stack
 
-The architecture is split into **three logical layers**:
+- Frontend: Vue 3, Vue Router, Vite
+- Backend: Node.js, Express 5, Prisma ORM, MySQL
+- Hardware: Raspberry Pi, Python, Flask, DHT11, GPIO
 
-### 🔁 Communication Flow
+## Setup
 
-1. **Hardware → Flask (Pi):** Sensor readings (temperature/humidity) and button states are captured on the Raspberry Pi using a Flask server.  
-2. **Flask → Backend:** The Pi sends this data via WebSockets or REST to the backend.  
-3. **Backend → Frontend:** The Node.js server relays data to the Vue frontend in real time, allowing interactive control and live updates.  
-4. **Admin CRUD:** Admin users can manage devices and sensors through REST API calls, backed by MySQL via Prisma schema.  
+### Backend
 
----
+```bash
+cd backend
+npm install
+npm run start
+```
 
-## 📐 Summary of Components
+The server listens on `0.0.0.0:3000`. Configure the database URL in
+`backend/.env` and run the Prisma client generation if `generated/prisma` is missing:
 
+```bash
+npx prisma generate
+```
 
-### 🖥 Frontend (Vue.js)
-- User interface for sensor data, and raspberry pi control.
-- Realtime updates using WebSockets.
-- Handles login, device/sensor CRUD (admin), and user controls (RGB LED, Buttons).
+### Frontend
 
-### 🧠 Backend (Node.js + Prisma + MySQL)
-- Central server bridging frontend and Raspberry Pi hardware.
-- Stores persistent records of devices and sensors.
-- Implements REST API endpoints and WebSocket message routing.
-- Prisma used as an ORM instead of raw SQL, improving flexibility.
+```bash
+cd frontend/my-vue-app
+npm install
+npm run dev
+```
 
-### 🛠 Raspberry Pi (Flask Hardware Layer)
-- Python Flask application directly interfaces with GPIO and sensors.
-- Sends data over WebSockets to the backend.
-- Handles hardware control logic (e.g., LEDs, buttons).
+### Raspberry Pi
 
----
+Run `raspberry-pi/pi_server.py` on the Pi. It expects the backend address configured
+in the script.
 
-## 🧠 Design Principles
+### Optional: view the database
 
-- **Loose coupling** between UI, server logic, and hardware code.
-- **Realtime feedback** using WebSockets — no page reloads required.
-- **Separation of concerns** — each layer focuses on its domain:
-  - Frontend for UI and UX.
-  - Backend for business logic and persistence.
-  - Raspberry Pi for actual IoT device interaction.
+```bash
+cd backend
+npx prisma studio
+```
 
-┌─────────────────────────────────────────────────────────────┐
-|                                                             |
-|                     CLIENT (Frontend Vue)                   |
-|                                                             |
-|   • Provides UI for users and admins                        |
-|   • Uses WebSockets for real-time updates                   |
-|   • Uses REST API for CRUD operations                       |
-|                                                             |
-└───────────────────────────▲─────────────────────────────────┘
-                            │
-         REST API / Realtime WebSockets
-                            │
-┌───────────────────────────▼─────────────────────────────────┐
-|                                                             |
-|                   BACKEND SERVER LAYER                      |
-|                                                             |
-|   • Node.js API (CRUD + application logic)                  |
-|   • Prisma ORM (database schema & migrations)               |
-|   • Connects to MySQL database                              |
-|   • Handles authenticated admin routes                      |
-|   • Serves realtime updates over WebSockets                 |
-|                                                             |
-|   • Python/Flask service connects with hardware on the Pi   |
-|     (collects sensor data and forwards it upstream)         |
-|                                                             |
-└───────────────────────────▲─────────────────────────────────┘
-                            │
-          WebSockets / API / LAN connection
-                            │
-┌───────────────────────────▼─────────────────────────────────┐
-|                                                             |
-|        IoT HARDWARE LAYER (Raspberry Pi & Sensors)          |
-|                                                             |
-|   • Flask service on the Pi handling GPIO                   |
-|     (e.g., button presses, LED control)                     |
-|   • DHT temperature & humidity sensor data                  |
-|   • WebSocket bridge to backend                             |
-|   • Acts as IoT device data source                          |
-|                                                             |
-└─────────────────────────────────────────────────────────────┘
+## Database
 
----
+Prisma schema lives at `backend/prisma/schema.prisma`. Tables:
 
-## 💾 Setup & Installation
-
-### 📌 Backend
-1. Clone the repo:
-   ```bash
-   git clone https://github.com/Elliotwhoisalsobo/IoT-webproject.git
-   Console 1
-   cd IoT-webproject/backend
-   npm run start
-   Console 2
-   cd frontend
-   cd my-vue-app
-   npn run dev
-   
-   bonus: database record viewing:
-   cd backend
-   npx Prisma Studio
+- `device` — registered IoT devices
+- `sensors` — sensors attached to a device
+- `temperature_humidity` — DHT11 readings
+- `led_activity` — LED on/off events
+- `login` — user accounts (username/password)
